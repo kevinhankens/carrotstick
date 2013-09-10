@@ -13,10 +13,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/new_hint" />
-        <Button android:id="@+id/add_button"
+        <ImageView android:src="@drawable/ic_input_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_button"
+            android:layout_gravity="center_vertical"
             android:onClick="addNew" />
     </LinearLayout>
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.kevinhankens.bouncer;
+package com.kevinhankens.carrotstick;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

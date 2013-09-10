@@ -1,4 +1,4 @@
-package com.kevinhankens.bouncer;
+package com.kevinhankens.carrotstick;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.DragEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
   
@@ -64,14 +66,13 @@ public class MainActivity extends Activity {
     ImageView delete = new ImageView(getApplicationContext());
     delete.setImageResource(R.drawable.ic_delete);
     //delete.paddingRight("10dp");
-    registerForContextMenu(delete);
     delete.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
+        // On click, open a context menu instance.
         ViewGroup wrapper = (ViewGroup) findViewById(R.id.wrapper);
         LinearLayout layout = (LinearLayout) v.getParent();
-        Item item = ItemData.datasource.getItemById((long) layout.getId());
-        ItemData.datasource.deleteItem(item);
-        wrapper.removeView(layout);
+        registerForContextMenu(layout);
+        openContextMenu(layout);
       }
     });
     layout.addView(delete);
@@ -85,6 +86,55 @@ public class MainActivity extends Activity {
     layout.setOnDragListener(new MyDragListener());
     return layout;
   }
+
+  /**
+   * Deletes an item based on the layout view id.
+   *
+   * @param Int id
+   *   The id of the layout view containing the item.
+   */
+  public void deleteItem(int id) {
+    ViewGroup wrapper = (ViewGroup) findViewById(R.id.wrapper);
+    LinearLayout layout = (LinearLayout) findViewById(id);
+    LinearLayout container = (LinearLayout) layout.getChildAt(1);
+    TextView text = (TextView) container.getChildAt(0);
+    CharSequence val = (CharSequence) text.getText();
+    Item item = ItemData.datasource.getItemById((long) layout.getId());
+    ItemData.datasource.deleteItem(item);
+    wrapper.removeView(layout);
+    Toast.makeText(this, "Deleted Task: " + val, Toast.LENGTH_SHORT).show();
+  }
+
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+
+    // Get the text from the layout view.
+    LinearLayout layout = (LinearLayout) v;
+    LinearLayout container = (LinearLayout) layout.getChildAt(1);
+    TextView text = (TextView) container.getChildAt(0);
+    CharSequence val = (CharSequence) text.getText();
+
+    // Set up the context menu.
+    menu.setHeaderTitle("Delete Task: " + val + "?");
+    menu.add(0, v.getId(), 0, "delete");
+    menu.add(0, v.getId(), 0, "cancel");
+  }
+
+  @Override
+  public boolean onContextItemSelected(MenuItem item) {
+    if(item.getTitle()=="delete"){
+      deleteItem(item.getItemId());
+    }
+    else if(item.getTitle()=="cancel"){
+      return false;
+    }
+    else {
+      return false;
+    }
+    return true;
+  }
+
 
   /**
    * Respond to a newly added item from the text input.

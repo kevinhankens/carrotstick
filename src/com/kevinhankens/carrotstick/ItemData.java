@@ -1,4 +1,4 @@
-package com.kevinhankens.bouncer;
+package com.kevinhankens.carrotstick;
 
 import android.app.Activity;
 import android.content.Context;

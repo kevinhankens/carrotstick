@@ -1,4 +1,4 @@
-package com.kevinhankens.bouncer;
+package com.kevinhankens.carrotstick;
 
 public class Item {
   private long id;
